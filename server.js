@@ -8,7 +8,7 @@ app.use(express.json());
 
 const ODOO_URL = 'https://odoo.holzkern.com';
 const DB       = 'holzkern-master-7173194';
-const LOGIN    = 'ivan.monev';
+const LOGIN    = 'ivan@holzkern.com';
 const API_KEY  = '14aafcfa72900c3bff8e0e6048c82035009ec56c';
 
 // Session cookie cache
