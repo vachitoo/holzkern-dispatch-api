@@ -75,7 +75,7 @@ app.get('/api/dispatch', async (req, res) => {
     // V07 open — only exact V07 picking types, not done/cancelled
     const v07Open = await cnt('stock.picking', [
       ['picking_type_id','in', PT_V07],
-      ['state','not in',['done','cancel']]
+      ['state','=','assigned']
     ]);
 
     // V07 done today
