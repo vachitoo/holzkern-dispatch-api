@@ -111,6 +111,17 @@ app.get('/api/dispatch', async (req, res) => {
   }
 });
 
+// Debug route — shows all picking types
+app.get('/api/types', async (req, res) => {
+  try {
+    const types = await odooRpc('stock.picking.type', 'search_read',
+      [[]], { fields: ['id','name','code','warehouse_id'], limit: 100 });
+    res.json(types);
+  } catch(err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.get('/', (req, res) => res.json({ status: 'ok', service: 'Holzkern Dispatch API' }));
 
 const PORT = process.env.PORT || 3000;
