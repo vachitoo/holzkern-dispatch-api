@@ -9,11 +9,12 @@ app.use(express.json());
 const ODOO_URL = 'https://odoo.holzkern.com';
 const DB       = 'holzkern-master-7173194';
 const LOGIN    = process.env.ODOO_LOGIN;
-const PASSWORD = process.env.ODOO_PASSWORD || '14aafcfa72900c3bff8e0e6048c82035009ec56c';
+const PASSWORD = process.env.ODOO_PASSWORD;
 
 let sessionCookie = null;
 
 async function getSession() {
+  console.log('Attempting login with:', LOGIN, '/ DB:', DB);
   const res = await fetch(`${ODOO_URL}/web/session/authenticate`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -22,10 +23,11 @@ async function getSession() {
       params: { db: DB, login: LOGIN, password: PASSWORD }
     })
   });
+  const data = await res.json();
+  console.log('Auth response uid:', data.result?.uid, 'error:', data.error);
   const setCookie = res.headers.get('set-cookie');
   if (setCookie) sessionCookie = setCookie.split(';')[0];
-  const data = await res.json();
-  if (!data.result?.uid) throw new Error('Auth failed — check ODOO_LOGIN and ODOO_PASSWORD');
+  if (!data.result?.uid) throw new Error('Auth failed: ' + JSON.stringify(data.result || data.error));
   return sessionCookie;
 }
 
@@ -104,7 +106,7 @@ app.get('/api/dispatch', async (req, res) => {
     });
 
   } catch(err) {
-    console.error(err);
+    console.error('API error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
