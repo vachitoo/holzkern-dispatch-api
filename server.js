@@ -12,7 +12,7 @@ const LOGIN    = process.env.ODOO_LOGIN;
 const PASSWORD = process.env.ODOO_PASSWORD;
 
 // Exact Picking Type IDs from Odoo
-const PT_V07        = [14, 15];       // V07-Delivery + V07B-Delivery (Repair)
+const PT_V07        = [14];       // V07-Delivery + V07B-Delivery (Repair)
 const PT_V03        = [10];           // V03-Inbound to Stock
 const PT_V04        = [11];           // V04-Inbound to Quality
 const PT_V05        = [12];           // V05-Quality to Stock
