@@ -94,7 +94,8 @@ app.get('/api/dispatch', async (req, res) => {
     // Expressversand = Expressversand
     const carrierGroups = [
       { key: 'fedex',       label: 'FedEx',         keywords: ['fedex'] },
-      { key: 'post_at',     label: 'Post AT',        keywords: ['post.at'] },
+      { key: 'post_de', label: 'Post DE', keywords: ['post.at de'] },
+      { key: 'post_at', label: 'Post AT', keywords: ['post.at at', 'express post.at at'] },
       { key: 'ups',         label: 'UPS',            keywords: ['ups'] },
       { key: 'expressversand', label: 'Expressversand', keywords: ['expressversand'] },
     ];
@@ -116,7 +117,7 @@ app.get('/api/dispatch', async (req, res) => {
     }
 
     // ── VERPACKER ──
-    const packers = ['Raphael','John','Jonas','Tanja','Niklas','Florian','Tim','Patrycja'];
+    const packers = ['Raphael Engelsberger','John Husarik','Jonas Aichberger','Tanja Weghofer','Niklas Voss','Florian Rottensteiner','Emirhan Korkmaz','Gregor Scharf','Lisa Klauder','Patrycja Sowidzka','Tim Heßberger'];
 
     const todayPickings = await sr('stock.picking',
       [['picking_type_id','in',PT_V07],['state','=','done'],['date_done','>=',t0],['date_done','<',t1]],
