@@ -70,6 +70,8 @@ app.get('/api/dispatch', async (req, res) => {
     }
 
     // ── OPEN COUNTS ──
+    const toDeliver = await cnt('stock.picking',[['picking_type_id','in',PT_V07],['state','=','confirmed']]);
+
     const [v07Open, expressDE, expressAT, prio, v07Done, tToday, tYest, tDby] = await Promise.all([
       cnt('stock.picking',[['picking_type_id','in',PT_V07],['state','=','assigned'],['batch_id','=',false],['note','not ilike','tittynope'],['note','not ilike','Juwelier'],['carrier_id.name','not ilike','Expressversand'],['carrier_id.name','not ilike','Express'],['carrier_id.name','not ilike','Prio']]),
       cnt('stock.picking',[['picking_type_id','in',PT_V07],['state','=','assigned'],['carrier_id.name','ilike','Expressversand']]),
@@ -121,7 +123,7 @@ app.get('/api/dispatch', async (req, res) => {
 
     const todayPickings = await sr('stock.picking',
       [['picking_type_id','in',PT_V07],['state','=','done'],['date_done','>=',t0],['date_done','<',t1]],
-      ['id','write_uid']
+      ['id','user_id']
     );
 
     const pickingIds = todayPickings.map(p => p.id);
@@ -141,7 +143,7 @@ app.get('/api/dispatch', async (req, res) => {
 
     const packerStats = {};
     for (const p of todayPickings) {
-      const userName = p.write_uid?.[1] || '';
+      const userName = p.user_id?.[1] || '';
       const matched = packers.find(n => userName.toLowerCase().includes(n.toLowerCase()));
       if (!matched) continue;
       if (!packerStats[matched]) packerStats[matched] = { transfers: 0, pieces: 0 };
@@ -157,7 +159,7 @@ app.get('/api/dispatch', async (req, res) => {
 
     res.json({
       dispatch: {
-        open: v07Open, done_today: v07Done,
+        open: v07Open, to_deliver: toDeliver, done_today: v07Done,
         express_de: expressDE, express_at: expressAT, prio,
         transfers: { today: tToday, yesterday: tYest, day_before: tDby },
         pieces: {
